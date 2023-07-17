@@ -30,7 +30,7 @@ class BodyView extends StatelessWidget {
             ),
           );
         } else {
-          return const Text('No data available');
+          return const Text('No  available');
         }
       },
     );
