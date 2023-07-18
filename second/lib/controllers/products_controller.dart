@@ -7,7 +7,7 @@ import 'package:second/models/product.dart';
 
 class ProductController extends GetxController {
   Rx<Product> product = Product().obs;
-  var isLoading= true.obs;
+   var isLoading= true.obs;
   @override
   onInit() {
     super.onInit();
