@@ -11,16 +11,17 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
-  ProductController productController = Get.put(ProductController());
-  late int total;
+    ProductController productController = Get.put(ProductController());
+
+
+  
   @override
   Widget build(BuildContext context) {
-    total = productController.product.value.products == null
-        ? 0
-        : productController.product.value.products!.length;
+    
     return Scaffold(
+
       appBar: AppBar(
-        title: Text(" Products: $total"),
+        title: Obx(() => Text(" Products: ${productController.product.value.products==null?0:productController.product.value.products!.length}")),
       ),
       body: Obx(() => productController.isLoading.isTrue
           ? const Center(child: CircularProgressIndicator())
@@ -79,7 +80,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   : productController.product.value.products!.length)),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.to(const AddProduct());
+          Get.to(() => const AddProduct());
         },
         child: const Icon(Icons.add),
       ),

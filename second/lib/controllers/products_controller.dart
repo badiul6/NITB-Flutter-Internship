@@ -21,8 +21,11 @@ class ProductController extends GetxController {
       final data = jsonDecode(response.body);
       product.value = Product.fromJson(data);
       isLoading.value=false;
+
+      
     } else {
       throw Exception('Failed to load album');
     }
   }
+
 }
