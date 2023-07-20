@@ -3,6 +3,7 @@
 //     final product = productFromJson(jsonString);
 
 import 'dart:convert';
+import 'dart:io';
 
 Product productFromJson(String str) => Product.fromJson(json.decode(str));
 
@@ -20,7 +21,32 @@ class Product {
           this.skip,
           this.limit,
     });
+addProduct({
+  required File pic,
+    required String title,
+    required String description,
+    required String price,
+    required String rating
+}){
+    ProductElement newProduct = ProductElement(
+  id: 1234,
+  title: title,
+  description: description,
+  price: int.parse(price),
+  discountPercentage: 10.0,
+  rating: double.parse(rating),
+  stock: 100,
+  brand: 'Brand X',
+  category: 'file',
+  thumbnail: pic.toString(),
+  images: [
+    'https://example.com/image1.jpg',
+    'https://example.com/image2.jpg',
+  ],
+);
+    products!.add(newProduct);
 
+  }
     factory Product.fromJson(Map<String, dynamic> json) => Product(
         products: List<ProductElement>.from(json["products"].map((x) => ProductElement.fromJson(x))),
         total: json["total"],
@@ -63,6 +89,7 @@ class ProductElement {
          this.images,
     });
 
+
     factory ProductElement.fromJson(Map<String, dynamic> json) => ProductElement(
         id: json["id"],
         title: json["title"],
@@ -90,4 +117,8 @@ class ProductElement {
         "thumbnail": thumbnail,
         "images": List<dynamic>.from(images!.map((x) => x)),
     };
+    @override
+  String toString() {
+    return 'ProductElement: {title: $title, description: $description, price: $price, rating: $rating}';
+  }
 }
