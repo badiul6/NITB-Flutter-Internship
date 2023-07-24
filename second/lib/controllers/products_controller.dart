@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:get/get.dart';
 import 'package:second/models/product.dart';
-import 'package:second/views/add_product_page.dart';
 
 class ProductController extends GetxController {
   Rx<Product> product = Product().obs;
