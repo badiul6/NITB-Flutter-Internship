@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:third/app/routes/app_pages.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -24,7 +25,7 @@ class HomeView extends GetView<HomeController> {
 
               GestureDetector(
                 onTap: () {
-                  Get.toNamed("/login");
+                  Get.toNamed(Routes.LOGIN);
                 },
                 child: Container(
                       height: MediaQuery.sizeOf(context).height*.09,

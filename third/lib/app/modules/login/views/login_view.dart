@@ -6,7 +6,7 @@ import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
   LoginView({Key? key}) : super(key: key);
-  final LoginController loginController = Get.put(LoginController());
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -26,39 +26,60 @@ class LoginView extends GetView<LoginController> {
                       fontWeight: FontWeight.bold,
                       color: Colors.blueGrey)),
               const SizedBox(height: 80),
-              TextFormField(
-                controller: loginController.emailController,
-                decoration: const InputDecoration(
-                    hintText: "Enter email", border: OutlineInputBorder()),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              TextFormField(
-                controller: loginController.passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  
-                    hintText: "Enter password", border: OutlineInputBorder()),
-              ),
+              Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: controller.emailController,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter Email';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                            hintText: "Enter email",
+                            border: OutlineInputBorder()),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      TextFormField(
+                        controller: controller.passwordController,
+                        obscureText: true,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter password';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                            hintText: "Enter password",
+                            border: OutlineInputBorder()),
+                      ),
+                    ],
+                  )),
               const SizedBox(
                 height: 70,
               ),
               Obx(() => Container(
-                    child: loginController.isLoading.value
+                    child: controller.isLoading.value
                         ? const Center(child: CircularProgressIndicator())
                         : ElevatedButton(
                             onPressed: () {
-                              loginController.loginUser(
-                                  loginController.emailController.text,
-                                  loginController.passwordController.text);
-                              final snackBar = SnackBar(
-                                  content: Obx(
-                                      () => Text(loginController.msg.value)),
-                                  action: SnackBarAction(
-                                      label: "Undo", onPressed: () {}));
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
+                              if (_formKey.currentState!.validate()) {
+                                controller.loginUser(
+                                    controller.emailController.text,
+                                    controller.passwordController.text);
+                                final snackBar = SnackBar(
+                                    content:
+                                        Obx(() => Text(controller.msg.value)),
+                                    action: SnackBarAction(
+                                        label: "Undo", onPressed: () {}));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                                 fixedSize: const Size(120, 50)),
