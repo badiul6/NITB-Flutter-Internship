@@ -1,50 +1,83 @@
+import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:vector_math/vector_math_64.dart' as vector;
 
 import 'package:get/get.dart';
-import 'package:third/app/routes/app_pages.dart';
 
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
-  const HomeView({Key? key}) : super(key: key);
+
+    HomeView({Key? key,  this.arCoreController}) : super(key: key);
+     ArCoreController? arCoreController;
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal:50.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text("Welcome", style: TextStyle(
-              fontSize: 48.0,
-              fontWeight: FontWeight.bold,
-              
-        )),
-        const SizedBox(height: 100,),
-
-              GestureDetector(
-                onTap: () {
-                  Get.toNamed(Routes.LOGIN);
-                },
-                child: Container(
-                      height: MediaQuery.sizeOf(context).height*.09,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(20.0)
-                      ),
-                      child: const Center(child: Text("Get Started", style: TextStyle(
-                fontSize: 24.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold
-                      ),)),
-                ),
-              ),
-            ],
-          ),
-        )
-      ),
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Hello World'),
+        ),
+        body: ArCoreView(
+          onArCoreViewCreated: _onArCoreViewCreated,
+        ),
+    
     );
   }
+
+ void _onArCoreViewCreated(ArCoreController controller) {
+    arCoreController = controller;
+
+    _addSphere(arCoreController!);
+    _addCylindre(arCoreController!);
+    _addCube(arCoreController!);
+  }
+
+  void _addSphere(ArCoreController controller) {
+    final material = ArCoreMaterial(
+        color: const Color.fromARGB(120, 66, 134, 244));
+    final sphere = ArCoreSphere(
+      materials: [material],
+      radius: 0.1,
+    );
+    final node = ArCoreNode(
+      shape: sphere,
+      position: vector.Vector3(0, 0, -1.5),
+    );
+    controller.addArCoreNode(node);
+  }
+
+  void _addCylindre(ArCoreController controller) {
+    final material = ArCoreMaterial(
+      color: Colors.red,
+      reflectance: 1.0,
+    );
+    final cylindre = ArCoreCylinder(
+      materials: [material],
+      radius: 0.5,
+      height: 0.3,
+    );
+    final node = ArCoreNode(
+      shape: cylindre,
+      position: vector.Vector3(0.0, -0.5, -2.0),
+    );
+    controller.addArCoreNode(node);
+  }
+
+  void _addCube(ArCoreController controller) {
+    final material = ArCoreMaterial(
+      color: const Color.fromARGB(120, 66, 134, 244),
+      metallic: 1.0,
+    );
+    final cube = ArCoreCube(
+      materials: [material],
+      size: vector.Vector3(0.5, 0.5, 0.5),
+    );
+    final node = ArCoreNode(
+      shape: cube,
+      position: vector.Vector3(-0.5, 0.5, -3.5),
+    );
+    controller.addArCoreNode(node);
+  }
+
 }

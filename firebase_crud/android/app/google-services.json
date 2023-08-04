@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "875013596630",
+    "project_id": "crudapp-d7669",
+    "storage_bucket": "crudapp-d7669.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875013596630:android:23229a479a506e20973077",
+        "android_client_info": {
+          "package_name": "badiul.dev.firebase_crud"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "875013596630-c3pi149e2tn03jrcsfcq8pastss85n0v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoqAPjE4RUe-8VgZ2O7KUE8OMLtHspnyY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "875013596630-c3pi149e2tn03jrcsfcq8pastss85n0v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
