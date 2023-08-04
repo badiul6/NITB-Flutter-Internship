@@ -24,6 +24,7 @@ class Product {
         .map((product) => (product['rating'] as num).toDouble())
         .toList();
 
+
     final List<String> thumbnails =
         products.map((product) => product['thumbnail'] as String).toList();
 
