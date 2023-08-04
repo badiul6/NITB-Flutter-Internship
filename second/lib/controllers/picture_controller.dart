@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:second/models/picture.dart';
-
 class PictureController extends GetxController {
   Rx<Picture> pic = Picture().obs;
 
