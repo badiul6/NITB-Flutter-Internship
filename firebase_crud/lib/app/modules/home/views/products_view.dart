@@ -80,6 +80,7 @@ class ProductsView extends GetView<ProductController> {
                                     controller.setId(int.parse(
                                         controller.products.value[index].id));
                                     controller.deleteProduct();
+                                    
                                   },
                                   child: const Text("Delete",
                                       style: TextStyle(color: Colors.white)))

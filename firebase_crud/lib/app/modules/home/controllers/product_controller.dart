@@ -30,7 +30,6 @@ class ProductController extends GetxController {
   void addProduct(String name, String description) {
     isLoading.value = true;
     print("on add function");
-    String id = DateTime.now().millisecondsSinceEpoch.toString();
 
     Product p = Product(name: name, description: description, id: id);
 
