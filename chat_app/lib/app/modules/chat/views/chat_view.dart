@@ -4,6 +4,33 @@ import 'package:get/get.dart';
 
 class ChatView extends GetView<ChatController> {
   const ChatView({Key? key}) : super(key: key);
+  Future<void> _showAlertDialog(context) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog( // <-- SEE HERE
+        title: const Text('Delete message(s)?'),
+        
+        actions: <Widget>[
+          TextButton(
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Yes'),
+            onPressed: () {
+                                  controller.delete();
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,20 +46,24 @@ class ChatView extends GetView<ChatController> {
               color: Colors.white,
             )),
         actions: [
-          Obx(() { return Visibility(
-                        visible: controller.wantsToDelete.value,
-                        child: IconButton(
-                            onPressed: () {
-                              // controller.deleteMessages();
-                              controller.wantsToDelete.value = false;
-                            },
-                            icon: Icon(Icons.delete)));}
-                            )
+          Obx(() => Visibility(
+              visible: controller.wantsToDelete.value,
+              child: IconButton(
+                  onPressed: () {
+
+                    _showAlertDialog(context);
+                  },
+                  icon: const Icon(Icons.delete))))
         ],
         elevation: 2,
-        title: const Text(
-          'Group Chat',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        title: Obx(
+          () => controller.wantsToDelete.isFalse
+              ? const Text('Group Chat',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w500))
+              : Text('${controller.deleteMessages.length} message(s) selected',
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w500)),
         ),
         centerTitle: true,
       ),
@@ -49,17 +80,21 @@ class ChatView extends GetView<ChatController> {
                   print(controller.isHighlight[reversedIndex]);
                   return GestureDetector(
                       onTap: () {
-                        if (controller.wantsToDelete.value) {
+                        if (controller.wantsToDelete.isTrue) {
+                          controller
+                              .addToDelete(controller.messages[reversedIndex]);
                           controller.isHighlight[reversedIndex] =
                               !controller.isHighlight[reversedIndex];
                         }
                       },
                       onLongPress: () {
                         controller.wantsToDelete.value = true;
+
                         controller.isHighlight[reversedIndex] =
                             !controller.isHighlight[reversedIndex];
                         debugPrint('anka');
-                        controller.addToDelete(controller.messages[reversedIndex]);
+                        controller
+                            .addToDelete(controller.messages[reversedIndex]);
                       },
                       child: Obx(
                         () => Stack(children: [
@@ -218,6 +253,18 @@ class ChatView extends GetView<ChatController> {
                 }),
           )),
           TextFormField(
+            onTap: () {
+            controller.wantsToDelete.value=false;
+            controller.deleteMessages.clear();
+            for(int i=0; i<controller.isHighlight.length; i++){
+              if(controller.isHighlight[i]=true) {
+                controller.isHighlight[i]=false;
+              }
+            }
+            
+            print('List==');
+            print(controller.isHighlight);
+            },
             controller: controller.messageController,
             decoration: InputDecoration(
                 hintStyle: const TextStyle(color: Colors.black),

@@ -18,6 +18,7 @@ class ChatController extends GetxController {
   void onInit() {
     super.onInit();
     getMessages();
+
   }
   void _scrollDown() {
   scrollController.animateTo(
@@ -28,10 +29,21 @@ class ChatController extends GetxController {
 }
 
 void addToDelete(Message m){
-  deleteMessages.add(m);
-  print(deleteMessages[0].content);
+  
+  if(deleteMessages.contains(m)){
+      deleteMessages.remove(m);
+            if(deleteMessages.isEmpty){
+wantsToDelete.value=false;
+  }
+  }
+  else{
+    deleteMessages.add(m);
+  }
+ 
+  print(deleteMessages.length);
+
 }
-void deleteProduct() {
+void delete() {
 
   deleteMessages.forEach((element) {
      db.collection("messages").doc(element.id).delete().then(
@@ -40,13 +52,14 @@ void deleteProduct() {
         );
    });
    deleteMessages.clear();
+   wantsToDelete.value=false;
    
   }
 
   void addMessage(String content) async {
+    
     String id = DateTime.now().millisecondsSinceEpoch.toString();
     DateTime now= DateTime.now();
-    print(now.toString());
     Message m =
         Message(content: content, from: 'Badiul', id: id, status: 'Pending', at: now);
 
@@ -79,7 +92,13 @@ void deleteProduct() {
         messages.assignAll(
           event.docs.map((doc) => Message.fromFirestore(doc)).toList(),
         );
-        isHighlight.assignAll(List.generate(messages.length, (index) => false));
+
+            isHighlight.assignAll(List.generate(messages.length, (index) => false));
+            wantsToDelete.value=false;
+            deleteMessages.clear();
+
+       
+   
         print(isHighlight);
       },
       onError: (error) => debugPrint("Listen failed: $error"),
