@@ -26,28 +26,26 @@ class ChatAppBar {
                   icon: const Icon(Icons.delete))))
         ],
         elevation: 2,
-        title: Obx(() => controller.wantsToDelete.isFalse
-            ? const Text('Group Chat',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.w500))
-            : Text('${controller.deleteMessages.length} message(s) selected',
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.w500)),),
+        title: Obx(
+          () => controller.wantsToDelete.isFalse
+              ? const Text('Group Chat',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w500))
+              : Text('${controller.deleteMessages.length} message(s) selected',
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w500)),
+        ),
         centerTitle: true,
       );
-
+    } else if (controller.view.value == 1) {
+      return AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(onPressed: () {}, icon: Icon(Icons.close)),
+        title: Text('# items selected'),
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.delete))],
+      );
     }
-   else if (controller.view.value == 1){
-    return AppBar(
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      leading: IconButton(onPressed: (){}, icon: Icon(Icons.close)),
-      title: Text('# items selected'),
-      actions: [
-        IconButton(onPressed: (){}, icon: Icon(Icons.delete))
-      ],
-    );
-   }
     return null;
   }
 

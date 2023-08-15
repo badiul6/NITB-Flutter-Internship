@@ -2,19 +2,21 @@ import 'package:chat_app/app/models/messages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ChatController extends GetxController {
-  RxList<Message> messages = <Message>[].obs;
   FirebaseFirestore db = FirebaseFirestore.instance;
-  final ScrollController scrollController = ScrollController();
+
+  RxList<Message> messages = <Message>[].obs;
   RxList<bool> isHighlight = <bool>[].obs;
-  RxBool wantsToDelete = false.obs;
   RxList<Message> deleteMessages = <Message>[].obs;
+
+  final ScrollController scrollController = ScrollController();
   TextEditingController messageController = TextEditingController();
-  RxBool attachFile= false.obs;
-  RxInt view=1.obs;
-  RxList<XFile> medias= <XFile>[].obs;
+
+  RxBool attachFile = false.obs;
+  RxBool wantsToDelete = false.obs;
+
+  RxInt view = 0.obs;
 
   @override
   void onInit() {
@@ -22,36 +24,28 @@ class ChatController extends GetxController {
     getMessages();
   }
 
-  pickMedia() async {
-    final ImagePicker picker = ImagePicker();
-
-     medias.value= await picker.pickMultipleMedia();
-      view.value = 1;
-
-
-  }
-  void onTapTextField(){
+  void onTapTextField() {
     wantsToDelete.value = false;
     deleteMessages.clear();
     for (int i = 0; i < isHighlight.length; i++) {
       if (isHighlight[i] = true) {
         isHighlight[i] = false;
-        }
       }
-  }
-  void onLongPressSelection(reversedIndex){
-    wantsToDelete.value = true;
-    isHighlight[reversedIndex] =!isHighlight[reversedIndex];
-    addToDelete(messages[reversedIndex]);
-  }
-  void onTapSelection(reversedIndex){
-    if (wantsToDelete.isTrue) {
-        addToDelete(messages[reversedIndex]);
-        isHighlight[reversedIndex] =
-            !isHighlight[reversedIndex];
-      }
+    }
   }
 
+  void onLongPressSelection(reversedIndex) {
+    wantsToDelete.value = true;
+    isHighlight[reversedIndex] = !isHighlight[reversedIndex];
+    addToDelete(messages[reversedIndex]);
+  }
+
+  void onTapSelection(reversedIndex) {
+    if (wantsToDelete.isTrue) {
+      addToDelete(messages[reversedIndex]);
+      isHighlight[reversedIndex] = !isHighlight[reversedIndex];
+    }
+  }
 
   void _scrollDown() {
     scrollController.animateTo(
@@ -74,7 +68,7 @@ class ChatController extends GetxController {
 
   void delete() {
     for (var element in deleteMessages) {
-      db.collection("messages").doc(element.id).delete().then(
+      db.collection("messages1").doc(element.id).delete().then(
             (doc) => debugPrint("Document deleted"),
             onError: (e) => debugPrint("Error updating document $e"),
           );
@@ -89,7 +83,7 @@ class ChatController extends GetxController {
     Message m = Message(
         content: content, from: 'Badiul', id: id, status: 'Pending', at: now);
 
-    final ref = db.collection('messages').doc(id);
+    final ref = db.collection('messages1').doc(id);
     ref.set(m.toFirestore()).then((value) {
       ref.update({'status': 'Sent'});
     }).onError((error, stackTrace) {});
@@ -99,7 +93,7 @@ class ChatController extends GetxController {
   void sentPendingMsgs() async {
     await db.waitForPendingWrites().whenComplete(() {
       db
-          .collection('messages')
+          .collection('messages1')
           .where('status', isEqualTo: 'Pending')
           .get()
           .then((value) {
@@ -111,7 +105,7 @@ class ChatController extends GetxController {
   }
 
   void getMessages() {
-    db.collection('messages').snapshots().listen(
+    db.collection('messages1').snapshots().listen(
       (event) {
         sentPendingMsgs();
 
