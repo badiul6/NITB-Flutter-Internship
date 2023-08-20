@@ -15,9 +15,11 @@ class ChatController extends GetxController {
 
   RxBool attachFile = false.obs;
   RxBool wantsToDelete = false.obs;
+  RxDouble percentage= 0.0.obs;
 
   RxInt view = 0.obs;
-
+  RxString url= "".obs;
+  RxString currentVideo="".obs;
   @override
   void onInit() {
     super.onInit();
@@ -80,15 +82,37 @@ class ChatController extends GetxController {
   void addMessage(String content) async {
     String id = DateTime.now().millisecondsSinceEpoch.toString();
     DateTime now = DateTime.now();
+
     Message m = Message(
-        content: content, from: 'Badiul', id: id, status: 'Pending', at: now);
+        content: content, from: 'Badiul', id: id, status: 'Pending', at: now, contentType: 'text');
 
     final ref = db.collection('messages1').doc(id);
+    
     ref.set(m.toFirestore()).then((value) {
       ref.update({'status': 'Sent'});
     }).onError((error, stackTrace) {});
     _scrollDown();
   }
+   Future<String> addMedia(String content, String contentType) async {
+    String id = DateTime.now().millisecondsSinceEpoch.toString();
+    DateTime now = DateTime.now();
+
+    Message m = Message(
+        content: content, from: 'Badiul', id: id, status: 'Pending', at: now, contentType: contentType);
+
+    final ref = db.collection('messages1').doc(id);
+    
+    ref.set(m.toFirestore()).then((value) {
+      ref.update({'status': 'Sent'});
+    }).onError((error, stackTrace) {});
+    //_scrollDown();
+    return id;
+  }
+  updateMediaMsg(String id,String url){
+    final ref= db.collection('messages1').doc(id);
+    ref.update({'content': url}).then((value) => print('updated'));
+  }
+
 
   void sentPendingMsgs() async {
     await db.waitForPendingWrites().whenComplete(() {
@@ -137,4 +161,6 @@ class ChatController extends GetxController {
     String formattedTime = '$hour:${minute.toString().padLeft(2, '0')} $period';
     return formattedTime;
   }
+
+  
 }

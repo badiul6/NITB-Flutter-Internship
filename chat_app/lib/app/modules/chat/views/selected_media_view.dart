@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 class SelectedMediaView extends GetView<SelectMediaController> {
   const SelectedMediaView({Key? key}) : super(key: key);
@@ -17,98 +16,90 @@ class SelectedMediaView extends GetView<SelectMediaController> {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
           ),
-          Obx(() => 
-           controller.medias[controller.media.value].name.isVideoFileName
+          Obx(
+            () => controller.video.isTrue
                 ? InkWell(
                     onTap: () {
-                      controller.togglePlaying();
+                      controller.togglePlaying(controller.media.value);
                     },
                     child: Stack(alignment: Alignment.center, children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height*0.4,
-                      
-
-                        child: AspectRatio(
-                          aspectRatio: controller.vController.value.aspectRatio,
-                          child: VideoPlayer(controller.vController),
-                        ),
+                        height: MediaQuery.of(context).size.height * 0.4,
+                        child: Obx(() => AspectRatio(
+                          aspectRatio: controller
+                              .vController[controller.media.value]
+                              .value
+                              .aspectRatio,
+                          child: VideoPlayer(
+                              controller.vController[controller.media.value]),
+                        ),)
                       ),
-                       Visibility(
-                            visible: !controller.isPlaying.value
-                            ,
-                            child: Center(
-                              child: CircleAvatar(
-                                radius: 25.0,
-                                backgroundColor: Colors.blue.withOpacity(0.7),
-                                child: Icon(Icons.play_arrow),
-                              ),
-                            ),
-                          )
+                      Visibility(
+                        visible: !controller.isPlaying.value,
+                        child: Center(
+                          child: CircleAvatar(
+                            radius: 25.0,
+                            backgroundColor: Colors.blue.withOpacity(0.7),
+                            child: Icon(Icons.play_arrow),
+                          ),
+                        ),
+                      )
                     ]),
                   )
                 : SizedBox(
-                  height: MediaQuery.of(context).size.height*0.4,
-                  child: Image.file(
-                      File(controller.medias[controller.media.value].path),
-                      height: MediaQuery.of(context).size.height * 0.5,
-                    ),
-                ),),
-          
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    child: Obx(() => Image.file(
+                          File(controller
+                              .medias[controller.selectedIndex.value].path),
+                          height: MediaQuery.of(context).size.height * 0.5,
+                        ))),
+          ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.10,
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.07,
-            child: ListView.builder(
-              itemCount: controller.medias.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-               
-                return InkWell(
-                  onTap: () {
-                    controller.media.value = index;
-                   
-                      controller.vController.dispose();
-                   
-
-                    controller.initializeVideoController(index);
-                  },
-                  child: Obx(() {
-                    final uint8list =  VideoThumbnail.thumbnailData(
-  video: controller.medias[index].path,
-  imageFormat: ImageFormat.JPEG,
-  maxWidth: 128, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
-  quality: 25,
-);
-                   return 
-                  //  controller.medias[index].name.isVideoFileName?
-                  //  AspectRatio(
-                  //   aspectRatio: controller.vController.value.aspectRatio,
-                  //   child: VideoPlayer(controller.vController))
-                  // :
-                   Container(
-                        margin: const EdgeInsets.only(right: 2),
-                        width: MediaQuery.of(context).size.width * 0.17,
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 2.0,
-                                color: controller.media.value == index
-                                    ? Colors.green
-                                    : Colors.transparent)),
-                        // child: Image.file(
-                        //   File(controller.medias[index].path),
-                        //   fit: BoxFit.fill,
-                        // ),
-                        child: Image.file(
-                          File(controller.medias[index].path),
-                          fit: BoxFit.fill,
-                        ),
+              height: MediaQuery.of(context).size.height * 0.07,
+              child: Obx(() => ListView.builder(
+                    itemCount: controller.medias.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          controller.onTapList(index);
+                        },
+                        child: Obx(() => Container(
+                              margin: const EdgeInsets.only(right: 2),
+                              width: MediaQuery.of(context).size.width * 0.17,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 2.0,
+                                      color: controller.selectedIndex.value ==
+                                              index
+                                          ? Colors.green
+                                          : Colors.transparent)),
+                              child: controller
+                                      .medias[index].name.isVideoFileName
+                                  ? AspectRatio(
+                                      aspectRatio: controller
+                                          .vController[controller.vController.indexWhere((element) =>
+                                              element.dataSource.replaceFirst(
+                                                  RegExp(r'file://'), '') ==
+                                              controller.medias[index].path)]
+                                          .value
+                                          .aspectRatio,
+                                      child: VideoPlayer(controller.vController[
+                                          controller.vController.indexWhere((element) =>
+                                              element.dataSource.replaceFirst(
+                                                  RegExp(r'file://'), '') ==
+                                              controller.medias[index].path)]))
+                                  : Image.file(
+                                      File(controller.medias[index].path),
+                                      fit: BoxFit.fill,
+                                    ),
+                            )),
                       );
-                      } ),
-                );
-              },
-            ),
-          ),
+                    },
+                  ))),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
           ),
@@ -116,7 +107,10 @@ class SelectedMediaView extends GetView<SelectMediaController> {
               style: ElevatedButton.styleFrom(
                   fixedSize: const Size(100, 40),
                   backgroundColor: const Color.fromARGB(255, 77, 139, 79)),
-              onPressed: () {},
+              onPressed: () {
+                controller.uploadFiles();
+                controller.changeView(0);
+              },
               child: const Text('Send'))
         ],
       ),

@@ -1,6 +1,9 @@
 import 'package:chat_app/app/modules/chat/controllers/chat_controller.dart';
+import 'package:chat_app/app/modules/chat/controllers/select_media_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
 
 class ChatAppBar {
   static appBar(
@@ -38,12 +41,81 @@ class ChatAppBar {
         centerTitle: true,
       );
     } else if (controller.view.value == 1) {
+      final control = Get.find<SelectMediaController>();
+
       return AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        leading: IconButton(onPressed: () {}, icon: Icon(Icons.close)),
-        title: Text('# items selected'),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.delete))],
+        leading: IconButton(
+            onPressed: () {
+              controller.view.value = 0;
+              control.disposeVideos();
+            },
+            icon: const Icon(Icons.close)),
+        title: const Text('# items selected'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                if (control
+                    .medias[control.selectedIndex.value].name.isVideoFileName) {
+                  List<VideoPlayerController> videos = [];
+                  videos = control.vController;
+                  videos
+                      .elementAt(control.vController.indexWhere((element) =>
+                          element.dataSource
+                              .replaceFirst(RegExp(r'file://'), '') ==
+                          control.medias[control.selectedIndex.value].path))
+                      .dispose();
+                  videos.removeAt(control.vController.indexWhere((element) =>
+                      element.dataSource.replaceFirst(RegExp(r'file://'), '') ==
+                      control.medias[control.selectedIndex.value].path));
+
+                  control.video.value = false;
+                }
+                List<XFile> media = [];
+
+                media = control.medias;
+
+                media.removeAt(control.selectedIndex.value);
+
+                if (control.medias.isEmpty) {
+                  controller.view.value = 0;
+                }
+                print(control.selectedIndex.value);
+                print(control.medias.length);
+                if (control.selectedIndex.value <= control.medias.length - 1) {
+                  if (control.medias[control.selectedIndex.value].name
+                      .isVideoFileName) {
+                    control.media.value = control.vController.indexWhere(
+                        (element) =>
+                            element.dataSource
+                                .replaceFirst(RegExp(r'file://'), '') ==
+                            control.medias[control.selectedIndex.value].path);
+                  }
+                }
+
+                if (control.selectedIndex.value == control.medias.length &&
+                    control.selectedIndex.value != 0) {
+                  control.selectedIndex.value--;
+                  if (control.medias[control.selectedIndex.value].name
+                      .isVideoFileName) {
+                    control.media.value = control.vController.indexWhere(
+                        (element) =>
+                            element.dataSource
+                                .replaceFirst(RegExp(r'file://'), '') ==
+                            control.medias[control.selectedIndex.value].path);
+                  }
+                }
+
+                if ((control.selectedIndex.value != 0 ||
+                        control.selectedIndex.value != control.medias.length) &&
+                    control.medias[control.selectedIndex.value].name
+                        .isVideoFileName) {
+                  control.video.value = true;
+                }
+              },
+              icon: const Icon(Icons.delete))
+        ],
       );
     }
     return null;

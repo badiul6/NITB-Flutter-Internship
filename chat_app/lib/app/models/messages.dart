@@ -5,9 +5,10 @@ class Message {
     String id;
    String status;
    dynamic at;
+   String contentType;
 
   String from;
-  Message({required this.content, required this.from, required this.id, required this.status, required this.at});
+  Message({required this.content, required this.from, required this.id, required this.status, required this.at, required this.contentType});
   
   Map<String, dynamic> toFirestore() {
     return {
@@ -15,7 +16,8 @@ class Message {
       'content': content,
       'id': id,
       'status': status,
-      'at':at
+      'at':at,
+      'contentType': contentType
     };
   }
   factory Message.fromFirestore(
@@ -27,7 +29,8 @@ class Message {
       from: data?['from']??"",
       content: data?['content']??"", 
       status: data?['status']??"",
-      at: data?['at']??""
+      at: data?['at']??"",
+      contentType: data?['contentType']??""
     );
   }
 }

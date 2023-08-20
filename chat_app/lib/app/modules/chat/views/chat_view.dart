@@ -1,12 +1,18 @@
+
 import 'package:chat_app/app/modules/chat/controllers/chat_controller.dart';
+import 'package:chat_app/app/modules/chat/controllers/play_video_controller.dart';
 import 'package:chat_app/app/modules/chat/views/attachments_list_view_view.dart';
 import 'package:chat_app/app/modules/chat/views/chat_app_bar_view.dart';
+import 'package:chat_app/app/modules/chat/views/display_content_view.dart';
+import 'package:chat_app/app/modules/chat/views/play_video_view.dart';
 import 'package:chat_app/app/modules/chat/views/selected_media_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ChatView extends GetView<ChatController> {
-  const ChatView({Key? key}) : super(key: key);
+   ChatView({Key? key}) : super(key: key);
+    final playController = Get.find<PlayVideoController>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +22,9 @@ class ChatView extends GetView<ChatController> {
           // backgroundColor: Colors.black54,
           backgroundColor: const Color.fromARGB(255, 170, 224, 179),
           appBar: ChatAppBar.appBar(controller: controller, context: context),
-          body: Obx(() => controller.view.value == 0
-              ? Column(
+          body: Obx(() {
+            if(controller.view.value == 0){
+              return Column(
                   children: [
                     Expanded(
                         child: Obx(
@@ -30,11 +37,21 @@ class ChatView extends GetView<ChatController> {
                               itemBuilder: (context, index) {
                                 int reversedIndex =
                                     controller.messages.length - 1 - index;
-                                return GestureDetector(
+                                return InkWell(
                                     onTap: () => controller
                                         .onTapSelection(reversedIndex),
                                     onLongPress: () => controller
                                         .onLongPressSelection(reversedIndex),
+                                        onDoubleTap: () {
+                                          if(controller.messages[reversedIndex].contentType == 'video' &&
+        controller.messages[reversedIndex].content != ""){
+controller.currentVideo.value= controller.messages[reversedIndex].content;
+                                          controller.view.value=2;
+                                          playController.initial();
+                                          
+        }
+                                          
+                                        },
                                     child: Obx(
                                       () => Stack(children: [
                                         Align(
@@ -131,32 +148,33 @@ class ChatView extends GetView<ChatController> {
                                                         child: const SizedBox(
                                                           height: 7.0,
                                                         )),
-                                                    RichText(
-                                                      textAlign: controller
-                                                                  .messages[
-                                                                      reversedIndex]
-                                                                  .from ==
-                                                              'Badiul'
-                                                          ? TextAlign.end
-                                                          : TextAlign.start,
-                                                      textDirection:
-                                                          TextDirection.ltr,
-                                                      text: TextSpan(
-                                                        text: controller
-                                                            .messages[
-                                                                reversedIndex]
-                                                            .content,
-                                                        style: TextStyle(
-                                                            fontSize: 18,
-                                                            color: controller
-                                                                        .messages[
-                                                                            reversedIndex]
-                                                                        .from ==
-                                                                    'Badiul'
-                                                                ? Colors.black
-                                                                : Colors.black),
-                                                      ),
-                                                    ),
+          //                                               RichText(
+          //   textAlign: controller
+          //               .messages[
+          //                   reversedIndex]
+          //               .from ==
+          //           'Badiul'
+          //       ? TextAlign.end
+          //       : TextAlign.start,
+          //   textDirection: TextDirection.ltr,
+          //   text: TextSpan(
+          //     text: controller
+          //         .messages[reversedIndex]
+          //         .content,
+          //     style: TextStyle(
+          //         fontSize: 18,
+          //         color: controller
+          //                     .messages[
+          //                         reversedIndex]
+          //                     .from ==
+          //                 'Badiul'
+          //             ? Colors.black
+          //             : Colors.black),
+          //   ),
+          // ),
+                                                    DisplayContentView(reversedIndex: reversedIndex, press: () {
+                                                      print('object');
+                                                    },),
                                                     const SizedBox(
                                                       height: 5.0,
                                                     ),
@@ -239,7 +257,7 @@ class ChatView extends GetView<ChatController> {
                                     color: const Color.fromARGB(
                                         255, 122, 178, 159),
                                     borderRadius: BorderRadius.circular(20)),
-                                child:  AttachmentsListViewView())),
+                                child:  const AttachmentsListViewView())),
                           )
                         ],
                       ),
@@ -266,6 +284,7 @@ class ChatView extends GetView<ChatController> {
                             onPressed: () {
                               controller.addMessage(
                                   controller.messageController.text);
+                                  
                               controller.messageController.clear();
                             },
                             icon: const Icon(
@@ -279,8 +298,18 @@ class ChatView extends GetView<ChatController> {
                               borderRadius: BorderRadius.circular(40))),
                     )
                   ],
-                )
-              : const SelectedMediaView())),
-    ));
+                );
+            }
+            else if(controller.view.value==1){
+            return const SelectedMediaView();
+
+          }
+          else {
+            return const PlayVideoView();
+          }
+          }
+          
+           )
+    )));
   }
 }
