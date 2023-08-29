@@ -10,7 +10,7 @@ class ChatAppBar {
       {required ChatController controller, required BuildContext context}) {
     if (controller.view.value == 0) {
       return AppBar(
-        backgroundColor: const Color.fromARGB(255, 42, 99, 44),
+        backgroundColor:  const Color.fromRGBO(141, 103, 248,1),
         leading: IconButton(
             onPressed: () {
               Get.back();
@@ -28,7 +28,7 @@ class ChatAppBar {
                   },
                   icon: const Icon(Icons.delete))))
         ],
-        elevation: 2,
+        elevation: 0,
         title: Obx(
           () => controller.wantsToDelete.isFalse
               ? const Text('Group Chat',

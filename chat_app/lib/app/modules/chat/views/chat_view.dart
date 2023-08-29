@@ -6,6 +6,7 @@ import 'package:chat_app/app/modules/chat/views/chat_app_bar_view.dart';
 import 'package:chat_app/app/modules/chat/views/display_content_view.dart';
 import 'package:chat_app/app/modules/chat/views/play_video_view.dart';
 import 'package:chat_app/app/modules/chat/views/selected_media_view.dart';
+import 'package:chat_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,8 +20,8 @@ class ChatView extends GetView<ChatController> {
     return SafeArea(
         child: Obx(
       () => Scaffold(
-          // backgroundColor: Colors.black54,
-          backgroundColor: const Color.fromARGB(255, 170, 224, 179),
+           backgroundColor:  const Color.fromARGB(216, 255, 255, 255),
+         // backgroundColor: const Color.fromARGB(255, 170, 224, 179),
           appBar: ChatAppBar.appBar(controller: controller, context: context),
           body: Obx(() {
             if(controller.view.value == 0){
@@ -43,13 +44,21 @@ class ChatView extends GetView<ChatController> {
                                     onLongPress: () => controller
                                         .onLongPressSelection(reversedIndex),
                                         onDoubleTap: () {
-                                          if(controller.messages[reversedIndex].contentType == 'video' &&
-        controller.messages[reversedIndex].content != ""){
-controller.currentVideo.value= controller.messages[reversedIndex].content;
-                                          controller.view.value=2;
-                                          playController.initial();
+//                                           if(controller.messages[reversedIndex].contentType == 'video' &&
+//         controller.messages[reversedIndex].content != ""){
+// controller.currentVideo.value= controller.messages[reversedIndex].content;
+//                                           controller.view.value=2;
+//                                           playController.initial();
                                           
-        }
+//         }
+if(controller.messages[reversedIndex].contentType=='video'&& controller.messages[reversedIndex].content!=""){
+  Get.toNamed(Routes.PLAYVIDEO, arguments: [
+    {
+      'video': controller.messages[reversedIndex].content
+    }
+  ]);
+
+}
                                           
                                         },
                                     child: Obx(
@@ -67,10 +76,10 @@ controller.currentVideo.value= controller.messages[reversedIndex].content;
                                                         .from !=
                                                     'Badiul'
                                                 ? const EdgeInsets.only(
-                                                    right: 70.0,
+                                                    right: 150.0,
                                                   )
                                                 : const EdgeInsets.only(
-                                                    left: 70.0),
+                                                    left: 150.0),
                                             child: Card(
                                               shape: RoundedRectangleBorder(
                                                   borderRadius: controller
@@ -101,14 +110,12 @@ controller.currentVideo.value= controller.messages[reversedIndex].content;
                                                               reversedIndex]
                                                           .from !=
                                                       'Badiul'
-                                                  ? const Color.fromRGBO(
-                                                      146, 183, 137, 1)
-                                                  : const Color.fromARGB(
-                                                      255, 96, 157, 137),
+                                                  ? const Color.fromRGBO(239, 239, 239,1)
+                                                  : const Color.fromRGBO(141, 103, 248,1),
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
                                                     top: 8.0,
-                                                    left: 8.0,
+                                                  left: 8.0,
                                                     right: 8.0,
                                                     bottom: 5.0),
                                                 child: Column(
@@ -195,7 +202,7 @@ controller.currentVideo.value= controller.messages[reversedIndex].content;
                                                                               reversedIndex]
                                                                           .from ==
                                                                       'Badiul'
-                                                                  ? Colors.black
+                                                                  ? Colors.white
                                                                   : Colors
                                                                       .black),
                                                         ),
@@ -213,15 +220,13 @@ controller.currentVideo.value= controller.messages[reversedIndex].content;
                                                                 ? const Icon(
                                                                     Icons.check,
                                                                     size: 18,
-                                                                    color: Colors
-                                                                        .black,
+                                                                    color: Colors.white,
                                                                   )
                                                                 : const Icon(
                                                                     Icons
                                                                         .schedule,
                                                                     size: 18,
-                                                                    color: Colors
-                                                                        .black,
+                                                                    color: Colors.white,
                                                                   )),
                                                       ],
                                                     )
@@ -254,48 +259,72 @@ controller.currentVideo.value= controller.messages[reversedIndex].content;
                                 width: 150,
                                 duration: const Duration(milliseconds: 300),
                                 decoration: BoxDecoration(
-                                    color: const Color.fromARGB(
-                                        255, 122, 178, 159),
+                                    color: const Color.fromRGBO(141, 103, 248,1),
                                     borderRadius: BorderRadius.circular(20)),
                                 child:  const AttachmentsListViewView())),
                           )
                         ],
                       ),
                     )),
-                    TextFormField(
-                      onTap: () => controller.onTapTextField(),
-                      controller: controller.messageController,
-                      decoration: InputDecoration(
-                          hintStyle: const TextStyle(color: Colors.black),
-                          hintText: "Enter message",
-                          filled: true,
-                          fillColor: Colors.white38,
-                          prefixIcon: IconButton(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal:5.0, vertical: 5.0),
+                      child: TextFormField(
+                        onTap: () => controller.onTapTextField(),
+                        controller: controller.messageController,
+                        decoration: InputDecoration(
+                            hintStyle: const TextStyle(color: Colors.black),
+                            hintText: "Enter message",
+                            filled: true,
+                            fillColor: Colors.white38,
+                            prefixIcon: IconButton(
+                                onPressed: () {
+                                  controller.attachFile.value =
+                                      !controller.attachFile.value;
+                                },
+                                icon: const Icon(
+                                  Icons.attach_file,
+                                  color:  Color.fromRGBO(141, 103, 248,1),
+                                  size: 24,
+                                )),
+                            suffixIcon: IconButton(
                               onPressed: () {
-                                controller.attachFile.value =
-                                    !controller.attachFile.value;
+                                controller.addMessage(
+                                    controller.messageController.text);
+                                    
+                                controller.messageController.clear();
                               },
                               icon: const Icon(
-                                Icons.attach_file,
-                                color: Color.fromARGB(255, 42, 99, 44),
-                                size: 24,
-                              )),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              controller.addMessage(
-                                  controller.messageController.text);
-                                  
-                              controller.messageController.clear();
-                            },
-                            icon: const Icon(
-                              Icons.send,
-                              color: Color.fromARGB(255, 42, 99, 44),
-                              size: 30,
+                                Icons.send,
+                                color:  Color.fromRGBO(112, 76, 212, 1),
+                                size: 30,
+                              ),
                             ),
-                          ),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(40))),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey
+                                ),
+                    
+                               
+                                
+                                borderRadius: BorderRadius.circular(20)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey
+                                ),
+                    
+                               
+                                
+                                borderRadius: BorderRadius.circular(20)),
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey                              ),
+                    
+                               
+                                
+                                borderRadius: BorderRadius.circular(20))),
+                                
+                    
+                      ),
                     )
                   ],
                 );

@@ -84,7 +84,7 @@ class ChatController extends GetxController {
     DateTime now = DateTime.now();
 
     Message m = Message(
-        content: content, from: 'Badiul', id: id, status: 'Pending', at: now, contentType: 'text');
+        content: content, from: 'Mazhar', id: id, status: 'Pending', at: now, contentType: 'text');
 
     final ref = db.collection('messages1').doc(id);
     

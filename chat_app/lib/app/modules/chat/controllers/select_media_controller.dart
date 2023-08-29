@@ -115,10 +115,13 @@ class SelectMediaController extends GetxController {
     final ImagePicker picker = ImagePicker();
 
     medias.value = await picker.pickMultipleMedia();
+    controller.attachFile.value=false;
 
-    controller.view.value = 1;
+    if(medias.isNotEmpty){
+      controller.view.value = 1;
 
     initialVideo();
+    }
   }
 
   changeView(int i) {

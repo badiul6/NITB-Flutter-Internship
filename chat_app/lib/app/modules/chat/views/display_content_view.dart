@@ -25,13 +25,14 @@ class DisplayContentView extends GetView<ChatController> {
  GestureDetector(
   onTap:press,
   
-  child: Icon(Icons.play_arrow, size: 40,)),
-           Text("Play Video"),
+  child: const Icon(Icons.play_arrow, size: 40,)),
+           const Text("Play Video"),
         ],
       );
     } else if (controller.messages[reversedIndex].contentType == "picture" &&
         controller.messages[reversedIndex].content != "") {
-      return Image.network(controller.messages[reversedIndex].content);
+      return Image.network(
+        controller.messages[reversedIndex].content);
     } else if ((controller.messages[reversedIndex].contentType == "video" ||
             controller.messages[reversedIndex].contentType == "picture") &&
         controller.messages[reversedIndex].content == "" &&
@@ -59,7 +60,7 @@ class DisplayContentView extends GetView<ChatController> {
         style: TextStyle(
             fontSize: 18,
             color: controller.messages[reversedIndex].from == 'Badiul'
-                ? Colors.black
+                ? Colors.white
                 : Colors.black),
       ),
     );

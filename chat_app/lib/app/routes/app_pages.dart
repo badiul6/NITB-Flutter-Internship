@@ -4,6 +4,8 @@ import '../modules/chat/bindings/chat_binding.dart';
 import '../modules/chat/views/chat_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/playvideo/bindings/playvideo_binding.dart';
+import '../modules/playvideo/views/playvideo_view.dart';
 
 part 'app_routes.dart';
 
@@ -20,8 +22,13 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.CHAT,
-      page: () =>  ChatView(),
+      page: () => ChatView(),
       binding: ChatBinding(),
+    ),
+    GetPage(
+      name: _Paths.PLAYVIDEO,
+      page: () => const PlayvideoView(),
+      binding: PlayvideoBinding(),
     ),
   ];
 }
