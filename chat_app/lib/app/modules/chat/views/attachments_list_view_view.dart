@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:chat_app/app/modules/chat/controllers/select_media_controller.dart';
 import 'package:flutter/material.dart';
 
